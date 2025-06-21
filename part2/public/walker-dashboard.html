@@ -10,6 +10,9 @@
 <body class="bg-light">
   <div id="app" class="container py-4">
     <h1 class="mb-4 text-success">Walker Dashboard</h1>
+    <div class="d-flex justify-content-end mb-3">
+      <button type="button" class="btn btn-danger mb-3" @click="logout">Logout</button>
+    </div>
 
     <!-- Alert messages -->
     <div v-if="message" class="alert alert-info">{{ message }}</div>
@@ -44,6 +47,7 @@
         const message = ref('');
         const error = ref('');
         const user = 3;
+        const walkerId = ref(null);
 
         async function loadWalkRequests() {
           try {
@@ -55,12 +59,23 @@
           }
         }
 
+        async function getCurrentUser() {
+          try {
+            const res = await fetch('/api/users/me');
+            if (!res.ok) throw new Error('Not logged in');
+            const data = await res.json();
+            walkerId.value = data.id;
+          } catch (err) {
+            error.value = 'Failed to get user info';
+          }
+        }
+
         async function applyToWalk(requestId) {
           try {
             const res = await fetch(`/api/walks/${requestId}/apply`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ walker_id: user })
+              body: JSON.stringify({ walker_id: walkerId.value })
             });
             const result = await res.json();
 
@@ -74,7 +89,13 @@
           }
         }
 
+        async function logout() {
+          await fetch('/api/users/logout');
+          window.location.href = '/';
+        }
+
         onMounted(() => {
+          getCurrentUser();
           loadWalkRequests();
         });
 
@@ -82,7 +103,8 @@
           walks,
           message,
           error,
-          applyToWalk
+          applyToWalk,
+          logout
         };
       }
     }).mount('#app');
