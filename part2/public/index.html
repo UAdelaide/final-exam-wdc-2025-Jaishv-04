@@ -91,46 +91,46 @@
           }
         },
         // Loads all the dogs data and images
-        async loadDogs() {
-          this.loading = true;
-          this.error = null;
+      //   async loadDogs() {
+      //     this.loading = true;
+      //     this.error = null;
 
-          try {
-            const res = await fetch('/api/dogs');
+      //     try {
+      //       const res = await fetch('/api/dogs');
 
-            if (!res.ok) {
-              throw new Error(`HTTP error! status: ${res.status}`);
-            }
+      //       if (!res.ok) {
+      //         throw new Error(`HTTP error! status: ${res.status}`);
+      //       }
 
-            const dogs = await res.json();
+      //       const dogs = await res.json();
 
-            // Load dogs with random images
-            this.dogs = await Promise.all(
-              dogs.map(async dog => {
-                try {
-                  const imgResponse = await fetch('https://dog.ceo/api/breeds/image/random');
-                  if (imgResponse.ok) {
-                    const imgData = await imgResponse.json();
-                    return { ...dog, image: imgData.message };
-                  } else {
-                    return { ...dog, image: '' };
-                  }
-                } catch (err) {
-                  return { ...dog, image: '' };
-                }
-              })
-            );
-          } catch (err) {
-            console.error('Error loading dogs:', err);
-            this.error = 'Failed to load dogs';
-            this.dogs = [];
-          } finally {
-            this.loading = false;
-          }
-        }
-      },
-      mounted() {   //Mounted a call to fetch dogs
-        this.loadDogs();
+      //       // Load dogs with random images
+      //       this.dogs = await Promise.all(
+      //         dogs.map(async dog => {
+      //           try {
+      //             const imgResponse = await fetch('https://dog.ceo/api/breeds/image/random');
+      //             if (imgResponse.ok) {
+      //               const imgData = await imgResponse.json();
+      //               return { ...dog, image: imgData.message };
+      //             } else {
+      //               return { ...dog, image: '' };
+      //             }
+      //           } catch (err) {
+      //             return { ...dog, image: '' };
+      //           }
+      //         })
+      //       );
+      //     } catch (err) {
+      //       console.error('Error loading dogs:', err);
+      //       this.error = 'Failed to load dogs';
+      //       this.dogs = [];
+      //     } finally {
+      //       this.loading = false;
+      //     }
+      //   }
+      // },
+      // mounted() {   //Mounted a call to fetch dogs
+      //   this.loadDogs();
       }
     }).mount('#app');
   </script>
